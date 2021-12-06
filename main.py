@@ -1,122 +1,113 @@
 # Setting up
-with open("day 4.txt") as file:
-    bingo_numbers = list(map(int, next(file).split(",")))
-    board_number = 0
-    boards = []
-    for row in file:
-        row = row.strip()
-        if row == "":
-            board = []
-            boards.append(board)
-            continue
-        board += map(int, row.split())
-    print(bingo_numbers)
+import json
 
-    overall_dict = {"0": []}
+with open("day 5.txt") as file:
+    content = file.read()
+    data = content.split('\n')
+    data = [x.replace(" -> ", ",") for x in data]
+    data = [x.split(",") for x in data]
+    print(data)
+    coordinate_dict = {
+        "x1": [],
+        "y1": [],
+        "x2": [],
+        "y2": [],
+    }
 
-    def make_dictionaries():
-        for board in boards:
-            board_dict = {"A": [], "B": [], "C": [], "D": [], "E": []}
-            rows = ["A", "B", "C", "D", "E"]
-            letter = 0
-            column = 0
-            for number in board:
-                board_dict[rows[letter]].append(number)
-                column += 1
-                if column == 5:
-                    letter += 1
-                    column = 0
-            overall_dict["0"].append(board_dict)
-        return overall_dict
+    for row in data:
+        coordinate_dict["x1"].append(int(row[0]))
+        coordinate_dict["y1"].append(int(row[1]))
+        coordinate_dict["x2"].append(int(row[2]))
+        coordinate_dict["y2"].append(int(row[3]))
 
-    def check_row(dictionary):
-        for row in dictionary:
-            checks = 0
-            for number in dictionary[row]:
-                if number == -1:
-                    checks += 1
-                    if checks == 5:
-                        return "good"
+    print(json.dumps(coordinate_dict, indent=4))
 
-    def check_column(dictionary):
-        rows = ["A", "B", "C", "D", "E"]
-        columns = [0, 1, 2, 3, 4]
+    max_x1 = max(coordinate_dict["x1"])
+    max_y1 = max(coordinate_dict["y1"])
+    # max_x2 = max(coordinate_dict["x2"])
+    # max_y2 = max(coordinate_dict["y2"])
+    # print(max_x1)
+    # print(max_y1)
+    # print(max_x2)
+    # print(max_y2)
+    # max x is 990 and max y is 989
 
-        for column in columns:
-            checks = 0
-            for row in rows:
-                if dictionary[row][column] == -1:
-                    checks += 1
-                    if checks == 5:
-                        return "good"
-
-    def check_for_winners(dictionary):
-        if dictionary["A"][0] == -1 and dictionary["B"][1] == -1 and dictionary["C"][2] == -1 and dictionary["D"][3] == -1 and \
-                dictionary["E"][4] == -1:
-            return "winner"
-        elif dictionary["E"][0] == -1 and dictionary["D"][1] == -1 and dictionary["C"][2] == -1 and dictionary["D"][3] == -1 and \
-                dictionary["A"][4] == -1:
-            return "winner"
-        elif check_row(dictionary) == "good":
-            return "winner"
-        elif check_column(dictionary) == "good":
-            return "winner"
-        else:
-            pass
-
-    def calc_score(dictionary, winning_number):
-        sum = 0
-        for row in dictionary:
-            for number in dictionary[row]:
-                if number != -1:
-                    sum += number
-        total_score = winning_number * sum
-        return total_score
-
-
-    make_dictionaries()
+    grid = []
+    for y in range(max_y1):
+        grid.append([])
+        for x in range(max_x1):
+            grid[y].append(0)
 
     # Puzzle 1
-
-    # index = 0
-    # winner = False
-    # while not winner:
-    #     print(index)
-    #     for a_dict in overall_dict["0"]:
-    #         for row in a_dict:
-    #             a_dict[row] = [-1 if bingo_numbers[index] == a_dict[row][i] else a_dict[row][i] for i in range(len(a_dict[row]))]
-    #             if check_for_winners(a_dict) == "winner":
-    #                 print(a_dict)
-    #                 print(calc_score(a_dict, bingo_numbers[index]))
-    #                 winner = True
-    #     index += 1
+    # for num in range(len(data)):
+    #     x1 = coordinate_dict["x1"][num]
+    #     y1 = coordinate_dict["y1"][num]
+    #     x2 = coordinate_dict["x2"][num]
+    #     y2 = coordinate_dict["y2"][num]
+    #     if x1 == x2 or y1 == y2:
+    #         if x1 == x2:
+    #             if y1 > y2:
+    #                 for y_add in range(y2, y1+1):
+    #                     grid[y_add-1][x1-1] += 1
+    #             elif y2 > y1:
+    #                 for y_add in range(y1, y2+1):
+    #                     grid[y_add-1][x1-1] += 1
+    #         elif y1 == y2:
+    #             if x1 > x2:
+    #                 for x_add in range(x2, x1+1):
+    #                     grid[y1-1][x_add-1] += 1
+    #             elif x2 > x1:
+    #                 for x_add in range(x1, x2+1):
+    #                     grid[y1-1][x_add-1] += 1
 
     # Puzzle 2
-    index = 0
-    winner = False
-    while winner:
-        for a_dict in overall_dict["0"]:
-            winner_list = []
-            for row in a_dict:
-                a_dict[row] = [-1 if bingo_numbers[index] == a_dict[row][i] else a_dict[row][i] for i in
-                               range(len(a_dict[row]))]
-            if check_for_winners(a_dict) == "winner":
-                winner_list.append(a_dict)
-                print(len(overall_dict["0"]))
-                if len(overall_dict["0"]) == 1:
-                    winner = True
+    for num in range(len(data)):
+        x1 = coordinate_dict["x1"][num]
+        y1 = coordinate_dict["y1"][num]
+        x2 = coordinate_dict["x2"][num]
+        y2 = coordinate_dict["y2"][num]
+        if x1 == x2 or y1 == y2:
+            if x1 == x2:
+                if y1 > y2:
+                    for y_add in range(y2, y1+1):
+                        grid[y_add-1][x1-1] += 1
+                elif y2 > y1:
+                    for y_add in range(y1, y2+1):
+                        grid[y_add-1][x1-1] += 1
+            elif y1 == y2:
+                if x1 > x2:
+                    for x_add in range(x2, x1+1):
+                        grid[y1-1][x_add-1] += 1
+                elif x2 > x1:
+                    for x_add in range(x1, x2+1):
+                        grid[y1-1][x_add-1] += 1
+        else:
+            if x1 > x2:
+                if y1 > y2:
+                    for y_add in range(y2, y1+1):
+                        grid[y1-1][x1-1] += 1
+                        y1 -= 1
+                        x1 -= 1
+                elif y2 > y1:
+                    for y_add in range(y1, y2+1):
+                        grid[y1-1][x1-1] += 1
+                        y1 += 1
+                        x1 -= 1
+            elif x2 > x1:
+                if y1 > y2:
+                    for y_add in range(y2, y1+1):
+                        grid[y1-1][x1-1] += 1
+                        y1 -= 1
+                        x1 += 1
+                elif y2 > y1:
+                    for y_add in range(y1, y2+1):
+                        grid[y1-1][x1-1] += 1
+                        y1 += 1
+                        x1 += 1
 
-            for winner in winner_list:
-                if winner in overall_dict["0"]:
-                    overall_dict["0"].remove(winner)
-                    print(len(overall_dict["0"]))
-        index += 1
-
-
-
-
-
-
-
-
-
+    overlap = 0
+    for row in grid:
+        for number in row:
+            if number > 1:
+                overlap += 1
+    print(overlap)
