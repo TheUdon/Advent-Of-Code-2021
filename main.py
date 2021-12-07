@@ -1,30 +1,34 @@
-from collections import Counter
 # Setting up
-with open("day 6.txt") as file:
-    fish_times = list(map(int, next(file).split(",")))
+with open("day 7.txt") as file:
+    content = list(map(int, next(file).split(",")))
+    min_position = min(content)
+    max_position = max(content)
+    print(content)
+    print(min_position)
+    print(max_position)
+    # lowest horizontal position is 0 and the highest horizontal position is 1892
+
     # Puzzle 1
-    # for day in range(80):
-    #     fish_times.extend([9] * fish_times.count(0))
-    #     fish_times = list(map(lambda fish: fish + 6 if fish == 0 else fish - 1, fish_times))
-    # print(len(fish_times))
+    # fuel_list = []
+    # for x in range(min_position, max_position + 1):
+    #     fuel_use = []
+    #     for crab in content:
+    #         fuel = crab - x
+    #         fuel_use.append(abs(fuel))
+    #     total_fuel = sum(fuel_use)
+    #     fuel_list.append(total_fuel)
+    # print(fuel_list)
+    # print(min(fuel_list))
 
     # Puzzle 2
-    # First time using the collections module, had to look up a faster way to do a loop like this
-    fish_dict = Counter(fish_times)
-    print(fish_dict)
-
-    for day in range(256):
-        zeroes = fish_dict[0]
-        fish_dict[0] = fish_dict[1]
-        fish_dict[1] = fish_dict[2]
-        fish_dict[2] = fish_dict[3]
-        fish_dict[3] = fish_dict[4]
-        fish_dict[4] = fish_dict[5]
-        fish_dict[5] = fish_dict[6]
-        fish_dict[6] = fish_dict[7]
-        fish_dict[6] += (zeroes)
-        fish_dict[7] = fish_dict[8]
-        fish_dict[8] = zeroes
-        print(day)
-
-    print(sum(x for x in fish_dict.values()))
+    fuel_list = []
+    for x in range(min_position, max_position + 1):
+        fuel_use = []
+        for crab in content:
+            steps = abs(crab - x)
+            fuel = sum([step for step in range(1, steps + 1)])
+            fuel_use.append(fuel)
+        total_fuel = sum(fuel_use)
+        fuel_list.append(total_fuel)
+    print(fuel_list)
+    print(min(fuel_list))
